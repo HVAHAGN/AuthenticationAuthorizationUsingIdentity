@@ -44,17 +44,21 @@ namespace Identity
             {
                 app.UseDeveloperExceptionPage();
             }
-
-          
+            app.UseRouting();
+         
+           
             //who are you?
             app.UseAuthentication();
 
             //are you allowed?
             app.UseAuthorization();
 
+          
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapDefaultControllerRoute();
+                endpoints.MapControllerRoute(
+                    name: "default",
+                    pattern: "{controller=Home}/{action=Login}/{id?}");
             });
         }
     }

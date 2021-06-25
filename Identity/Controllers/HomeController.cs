@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection.Metadata.Ecma335;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using Identity.Models;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -24,33 +25,24 @@ namespace Identity.Controllers
             _signInManager = signInManager;
         }
 
-
         public IActionResult Index()
         {
             return View();
         }
 
-        [Authorize]
-        public IActionResult Secret()
-        {
-            return View();
-
-        }
- 
         public IActionResult Login()
         {
             return View();
         }
         [HttpPost]
-        public async Task<IActionResult> Login(string userName, string password)
+        public async Task<IActionResult> Login(LoginModel model)
         {
           
-            var user =await  _userManager.FindByNameAsync(userName);
+            var user =await  _userManager.FindByNameAsync(model.UserName);
 
-            //login functionality
             if (user!=null)
             {
-                var signInResult = await _signInManager.PasswordSignInAsync(user, password, false, false);
+                var signInResult = await _signInManager.PasswordSignInAsync(user, model.Password, false, false);
                 if (signInResult.Succeeded)
                 {
                     return RedirectToAction("Index");
@@ -59,31 +51,29 @@ namespace Identity.Controllers
             return RedirectToAction("Login");
         }
         [HttpPost]
-        public async Task<IActionResult> Register(string userName, string password)
+        public async Task<IActionResult> Register(RegisterModel model)
         {
             var user = new IdentityUser()
             {
-                UserName = userName,
+                UserName = model.UserName,
                 Email = ""
             };
-             var result =await _userManager.CreateAsync(user, password);
+             var result =await _userManager.CreateAsync(user, model.Password);
             if (result.Succeeded)
             {
-                var signInResult = await _signInManager.PasswordSignInAsync(user, password, false, false);
+                var signInResult = await _signInManager.PasswordSignInAsync(user, model.Password, false, false);
                 if (signInResult.Succeeded)
                 {
-                    return RedirectToAction("Index");
+                    return RedirectToAction("Login");
                     
                 }
 
             }
-            //register functionality
-            return RedirectToAction("Login");
+            return RedirectToAction("Register");
         }
       
         public IActionResult Register()
         {
-
             return View();
         }
         public async Task<IActionResult> SignOut()
