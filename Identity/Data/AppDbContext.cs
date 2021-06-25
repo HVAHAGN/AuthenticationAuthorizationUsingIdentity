@@ -3,10 +3,10 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Identity.Data
 {
-    public class AppDbContext:IdentityDbContext
+    public class AppDbContext : IdentityDbContext
     {
         public AppDbContext(DbContextOptions<AppDbContext> options)
-            :base(options)
+            : base(options)
         {
 
         }

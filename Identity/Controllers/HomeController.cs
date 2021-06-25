@@ -1,15 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection.Metadata.Ecma335;
-using System.Security.Claims;
-using System.Threading.Tasks;
-using Identity.Models;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
+﻿using Identity.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
 
 namespace Identity.Controllers
 {
@@ -37,10 +29,10 @@ namespace Identity.Controllers
         [HttpPost]
         public async Task<IActionResult> Login(LoginModel model)
         {
-          
-            var user =await  _userManager.FindByNameAsync(model.UserName);
 
-            if (user!=null)
+            var user = await _userManager.FindByNameAsync(model.UserName);
+
+            if (user != null)
             {
                 var signInResult = await _signInManager.PasswordSignInAsync(user, model.Password, false, false);
                 if (signInResult.Succeeded)
@@ -58,20 +50,20 @@ namespace Identity.Controllers
                 UserName = model.UserName,
                 Email = ""
             };
-             var result =await _userManager.CreateAsync(user, model.Password);
+            var result = await _userManager.CreateAsync(user, model.Password);
             if (result.Succeeded)
             {
                 var signInResult = await _signInManager.PasswordSignInAsync(user, model.Password, false, false);
                 if (signInResult.Succeeded)
                 {
                     return RedirectToAction("Login");
-                    
+
                 }
 
             }
             return RedirectToAction("Register");
         }
-      
+
         public IActionResult Register()
         {
             return View();
